@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Moto Kick City</title>
+  <style>
+    * { box-sizing: border-box; user-select: none; -webkit-user-select: none; touch-action: none; }
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: #14171f;
+      font-family: system-ui, -apple-system, sans-serif;
+      color: #fff;
+    }
+    canvas { display: block; width: 100vw; height: 100vh; }
+    #hud {
+      position: fixed;
+      top: 12px;
+      left: 12px;
+      right: 12px;
+      display: flex;
+      justify-content: space-between;
+      pointer-events: none;
+      font-weight: 700;
+      font-size: 14px;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.8);
+    }
+    #joystick-zone {
+      position: fixed;
+      bottom: 24px;
+      left: 24px;
+      width: 130px;
+      height: 130px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.12);
+      border: 2px solid rgba(255, 255, 255, 0.28);
+    }
+    #joystick-knob {
+      position: absolute;
+      width: 54px;
+      height: 54px;
+      border-radius: 50%;
+      background: rgba(255, 196, 0, 0.85);
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+    }
+    #action-buttons {
+      position: fixed;
+      bottom: 28px;
+      right: 24px;
+      display: flex;
+      gap: 14px;
+      align-items: flex-end;
+    }
+    .btn-ctrl {
+      width: 74px;
+      height: 74px;
+      border-radius: 50%;
+      border: 2px solid rgba(255,255,255,0.35);
+      font-weight: 800;
+      font-size: 13px;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 6px 14px rgba(0,0,0,0.45);
+    }
+    #btn-drift { background: rgba(220, 53, 69, 0.85); }
+    #btn-kick  { background: rgba(0, 180, 216, 0.9); width: 84px; height: 84px; }
+  </style>
+</head>
+<body>
+  <canvas id="game"></canvas>
+
+  <div id="hud">
+    <div id="score-box">PUNTOS: 0</div>
+    <div id="speed-box">VEL: 0 km/h</div>
+  </div>
+
+  <div id="joystick-zone">
+    <div id="joystick-knob"></div>
+  </div>
+
+  <div id="action-buttons">
+    <div id="btn-drift" class="btn-ctrl">DERRAPE</div>
+    <div id="btn-kick" class="btn-ctrl">PATADA</div>
+  </div>
+
+  <script>
+    const canvas = document.getElementById("game");
+    const ctx = canvas.getContext("2d");
+
+    function resize() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    window.addEventListener("resize", resize);
+    resize();
+
+    const moto = {
+      x: 400,
+      y: 400,
+      angle: 0,
+      vx: 0,
+      vy: 0,
+      speed: 0,
+      kickTimer: 0,
+      drifting: false
+    };
+
+    const traffic = [];
+    for (let i = 0; i < 8; i++) {
+      traffic.push({
+        x: 200 + Math.random() * 1400,
+        y: 200 + Math.random() *
+  
